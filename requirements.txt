@@ -1,0 +1,8 @@
+langchain
+langchain-community
+langchain-google-genai
+langchain-google-vertexai
+google-cloud-aiplatform
+unstructured
+requests
+beautifulsoup4

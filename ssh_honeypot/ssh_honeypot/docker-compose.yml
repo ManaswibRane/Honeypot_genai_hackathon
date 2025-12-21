@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  ssh-honeypot:
+    build: .
+    image: localhost/ssh-honeypot:latest
+    container_name: ssh-honeypot
+    ports:
+      - "2222:2222"
+    volumes:
+      - ./logs:/app/logs:rw
+    restart: unless-stopped
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true

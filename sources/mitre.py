@@ -17,7 +17,7 @@ ID: {obj.get("external_references", [{}])[0].get("external_id")}
 Description: {obj.get("description")}
 """,
                     metadata={
-                        "source": "MITRE_ATT&CK",
+                        "source": "MITRE ATT&CK",
                         "technique_id": obj.get("external_references", [{}])[0].get("external_id")
                     }
                 )

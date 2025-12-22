@@ -6,3 +6,5 @@ google-cloud-aiplatform
 unstructured
 requests
 beautifulsoup4
+pandas
+openpyxl

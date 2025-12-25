@@ -76,7 +76,7 @@ if __name__ == "__main__":
 #     llm = ChatGoogleGenerativeAI(
 #     model="models/gemini-2.5-flash",
 #     temperature=0,
-#     api_key="AIzaSyD06Brh3xxu8pKx8w8i8u91blJBOIBPcsw"
+#     api_key=""
 # )
 
     # ask(vectorstore, llm, "What kind of services do they provide?")

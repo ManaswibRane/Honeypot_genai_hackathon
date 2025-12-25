@@ -3,7 +3,7 @@ import os
 PROJECT_ID = "your-project-id"
 REGION = "us-central1"
 
-NVD_API_KEY = os.getenv("a60c6996-3356-4660-b8fc-025d98804544")
+NVD_API_KEY = os.getenv("")
 
 INDEX_ID = "YOUR_INDEX_ID"
 ENDPOINT_ID = "YOUR_ENDPOINT_ID"

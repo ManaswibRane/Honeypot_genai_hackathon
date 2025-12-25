@@ -1,0 +1,219 @@
+How RAG Interacts with the Entire System
+Think of RAG as the system’s “threat memory + context engine”.
+
+It does not:
+
+Make decisions
+
+Change the honeypot
+
+Predict by itself
+
+It only provides grounded context so the LLM (Gemini) can reason correctly.
+
+1️⃣ Position of RAG in the System
+Here’s the correct mental placement of RAG:
+
+Honeypot Logs
+     ↓
+Feature Extraction (Regex / Parsers)
+     ↓
+Structured Behavioral Events
+     ↓
+RAG (Threat Knowledge Retrieval)
+     ↓
+LLM Reasoning (Gemini via Vertex AI)
+     ↓
+Predictions & Intent
+     ↓
+Adaptive Honeypot / Reports
+📌 RAG always sits between “what happened” and “what does it mean”.
+
+2️⃣ What Data Goes INTO RAG (Inputs)
+RAG has two types of inputs, and this distinction is very important.
+
+🔹 A. Static Knowledge (Pre‑Ingested)
+This is loaded once and continuously updated, not per attack.
+
+1. MITRE ATT&CK
+Stored as:
+
+Technique ID
+
+Description
+
+Typical sequences
+
+Common follow‑ups
+
+Example:
+
+{
+  "technique": "T1059",
+  "phase": "Execution",
+  "description": "Command and scripting interpreter usage",
+  "often_follows": ["T1105"]
+}
+2. CVE / NVD Summaries
+Stored as:
+
+Affected component
+
+Attack vector
+
+Impact
+
+Exploitation conditions
+
+{
+  "cve": "CVE-2024-XXXX",
+  "component": "Web Framework",
+  "vector": "Remote",
+  "impact": "RCE"
+}
+3. ExploitDB / Blog Metadata (Sanitized)
+Stored as:
+
+Vulnerability behavior
+
+Observed attack pattern
+
+Kill‑chain stage
+
+{
+  "source": "Threat Blog",
+  "pattern": "Unauthenticated endpoint → payload upload → execution",
+  "mapped_techniques": ["T1190", "T1059"]
+}
+📌 No exploit code, no commands, no payloads.
+
+🔹 B. Dynamic Query Input (Per Session)
+This comes from your system, not the attacker.
+
+Example input sent to RAG:
+
+{
+  "honeypot": "ssh",
+  "observed_events": [
+    "file_download",
+    "permission_change",
+    "execution_attempt"
+  ]
+}
+This is used only to retrieve relevant knowledge, not to store data.
+
+3️⃣ What RAG Actually DOES (Internally)
+RAG performs semantic similarity matching, not logic.
+
+Step‑by‑step:
+Convert the behavior summary into an embedding
+
+Search the vector database
+
+Retrieve top‑K relevant threat documents
+
+Example retrieved context:
+
+MITRE T1105 (Ingress Tool Transfer)
+
+CVE blog describing “wget → chmod → execute” patterns
+
+ATT&CK sequence examples
+
+📌 RAG does not interpret, it retrieves.
+
+4️⃣ What RAG Outputs (This Is Critical)
+RAG output is NOT a final answer.
+It is structured context passed to the LLM.
+
+Example RAG Output
+{
+  "retrieved_context": [
+    {
+      "source": "MITRE",
+      "technique": "T1105",
+      "description": "Adversaries may transfer tools from external systems",
+      "common_followups": ["T1059", "T1053"]
+    },
+    {
+      "source": "Threat Blog",
+      "pattern": "Payload download followed by execution and persistence",
+      "confidence": 0.87
+    }
+  ]
+}
+This becomes input context for Gemini, not a decision.
+
+5️⃣ How Gemini Uses RAG Output
+Gemini receives three things:
+
+Observed behavior (from logs)
+
+Retrieved RAG context
+
+A reasoning task
+
+Conceptual Prompt Structure
+Observed Behavior:
+- file_download
+- permission_change
+- execution_attempt
+
+Relevant Threat Context:
+- MITRE T1105: tool transfer
+- Typical follow-up: persistence mechanisms
+
+Task:
+Infer attacker intent and likely next stage.
+📌 Because of RAG:
+
+Gemini doesn’t hallucinate
+
+Gemini stays aligned with known attacks
+
+Output is explainable
+
+6️⃣ What Gemini Outputs (Consumed by Other Components)
+Gemini outputs structured reasoning, such as:
+
+{
+  "attack_stage": "Execution",
+  "mapped_techniques": ["T1105", "T1059"],
+  "next_likely_stage": "Persistence",
+  "confidence": 0.81
+}
+This output is then consumed by:
+
+🔁 Adaptive Honeypot Controller
+
+📊 Threat Intelligence Generator
+
+📈 Dashboards / Reports
+
+7️⃣ How RAG Interacts With Each Component
+🔹 With Honeypots
+RAG never talks directly to honeypots
+
+It indirectly influences behavior via LLM predictions
+
+🔹 With Feature Extraction
+Feature extraction feeds clean inputs to RAG
+
+RAG depends on correct abstraction (not raw logs)
+
+🔹 With Learning / Prediction
+RAG provides historical + theoretical grounding
+
+Learning quality depends on RAG freshness
+
+🔹 With Adaptation Engine
+Adaptation trusts LLM output
+
+LLM trusts RAG context
+
+This creates a safe dependency chain.
+
+8️⃣ One‑Line Summary (Very Important)
+RAG supplies “what is known about attacks.”
+The LLM decides “what this behavior likely means.”
+The system decides “what to do next.”

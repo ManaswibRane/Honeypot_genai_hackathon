@@ -1,6 +1,6 @@
-from ingest import ingest_all
-from vectorstore import init_vertex, split_documents, embed_chunks
-from config import NVD_API_KEY, INDEX_ID
+from src.data_processing.ingest import ingest_all
+from src.rag.vectorstore import init_vertex, split_documents, embed_chunks
+from src.config import NVD_API_KEY, INDEX_ID
 from google.cloud import aiplatform
 
 def get_document_id(chunk):

@@ -8,3 +8,7 @@ requests
 beautifulsoup4
 pandas
 openpyxl
+faiss-cpu
+sentence-transformers
+
+langchain-huggingface

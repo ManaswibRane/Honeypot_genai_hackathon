@@ -1,0 +1,27 @@
+{
+  "layer": 3,
+  "filesystem": [
+    {
+      "path": "/opt/payments/config/prod.env",
+      "type": "file",
+      "content": "REDIS_HOST=cache.internal\nREDIS_PASS=redisLegacy123\n",
+      "owner": "legacy",
+      "mode": "600"
+    },
+    {
+      "path": "/opt/payments/logs",
+      "type": "dir",
+      "content": "",
+      "owner": "legacy",
+      "mode": "750"
+    }
+  ],
+  "credentials": [
+    {
+      "service": "redis",
+      "username": "payments_app",
+      "secret": "redisLegacy123",
+      "location": "/opt/payments/config/prod.env"
+    }
+  ]
+}
